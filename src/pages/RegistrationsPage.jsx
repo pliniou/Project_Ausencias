@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Plus, Trash2, Users, Calendar, Building } from 'lucide-react';
-import { Layout } from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -16,47 +15,45 @@ import { toast } from '@/hooks/use-toast';
 
 export default function RegistrationsPage() {
     return (
-        <Layout>
-            <div className="space-y-6 animate-fade-in">
-                <div>
-                    <h1 className="text-2xl font-display font-bold text-foreground">
-                        Cadastros
-                    </h1>
-                    <p className="text-muted-foreground mt-1">
-                        Gerencie colaboradores, feriados e eventos da empresa
-                    </p>
-                </div>
-
-                <Tabs defaultValue="employees" className="space-y-6">
-                    <TabsList>
-                        <TabsTrigger value="employees" className="gap-2">
-                            <Users className="h-4 w-4" />
-                            Colaboradores
-                        </TabsTrigger>
-                        <TabsTrigger value="holidays" className="gap-2">
-                            <Calendar className="h-4 w-4" />
-                            Feriados
-                        </TabsTrigger>
-                        <TabsTrigger value="events" className="gap-2">
-                            <Building className="h-4 w-4" />
-                            Eventos
-                        </TabsTrigger>
-                    </TabsList>
-
-                    <TabsContent value="employees">
-                        <EmployeesTab />
-                    </TabsContent>
-
-                    <TabsContent value="holidays">
-                        <HolidaysTab />
-                    </TabsContent>
-
-                    <TabsContent value="events">
-                        <EventsTab />
-                    </TabsContent>
-                </Tabs>
+        <div className="space-y-6 animate-fade-in">
+            <div>
+                <h1 className="text-2xl font-display font-bold text-foreground">
+                    Cadastros
+                </h1>
+                <p className="text-muted-foreground mt-1">
+                    Gerencie colaboradores, feriados e eventos da empresa
+                </p>
             </div>
-        </Layout>
+
+            <Tabs defaultValue="employees" className="space-y-6">
+                <TabsList>
+                    <TabsTrigger value="employees" className="gap-2">
+                        <Users className="h-4 w-4" />
+                        Colaboradores
+                    </TabsTrigger>
+                    <TabsTrigger value="holidays" className="gap-2">
+                        <Calendar className="h-4 w-4" />
+                        Feriados
+                    </TabsTrigger>
+                    <TabsTrigger value="events" className="gap-2">
+                        <Building className="h-4 w-4" />
+                        Eventos
+                    </TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="employees">
+                    <EmployeesTab />
+                </TabsContent>
+
+                <TabsContent value="holidays">
+                    <HolidaysTab />
+                </TabsContent>
+
+                <TabsContent value="events">
+                    <EventsTab />
+                </TabsContent>
+            </Tabs>
+        </div>
     );
 }
 

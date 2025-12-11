@@ -1,80 +1,92 @@
-# Controle de Férias e Afastamentos - BBTS
+# Controle de Afastamentos (Project Ausencias)
 
-Bem-vindo ao sistema **Controle de Férias e Afastamentos**, uma solução moderna desenvolvida para a BBTS gerenciar jornadas, escalas e ausências dos colaboradores de forma visual e intuitiva.
+Sistema moderno para gestão de ausências e escalas de trabalho, desenvolvido para a BBTS. Estilizado com identidade visual profissional e funcionalidades de administração robustas.
 
-## 🚀 Funcionalidades Principais
+![Status](https://img.shields.io/badge/status-active-success.svg)
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
 
-* **Gestão Completa de Afastamentos**: Registro de férias, licenças médicas, licenças maternidade/paternidade, entre outros, com validação de datas e regras CLT.
-* **Controle de Férias (CLT)**: Validação automática de períodos aquisitivos e concessivos, garantindo conformidade legal (ex: regra dos 14 dias).
-* **Calendário Interativo**: Visualização mensal com distinção clara de feriados, finais de semana e períodos de afastamento.
-* **Temas Visualmente Ricos**: Modos de visualização **Escuro** (padrão) e **Sépia** (conforto visual), com suporte a alto contraste.
-* **Relógio de Brasília**: Exibição da hora oficial em tempo real no dashboard.
-* **Exportação**: Geração de relatórios de afastamentos em formato texto (.txt).
-* **Gestão de Cadastros**: Administração de Colaboradores, Feriados (Nacionais/Estaduais) e Eventos Corporativos.
+## 🚀 Funcionalidades
 
-## 📋 Pré-requisitos de Instalação
+- **Autenticação Segura**: Login com proteção de rotas e hash de senha via `bcryptjs`.
+- **Banco de Dados Local**: Utiliza **SQLite Client-Side (WASM)** com persistência automática no navegador.
+- **Dashboard Administrativo**: Controle total para Superadmins (criar usuários, resetar senhas, vincular a funcionários).
+- **Design Premium**:
+  - Temas: Claro, Escuro, Sépia e **Colorido** (Novo!).
+  - Tipografia moderna: `Recursive` para títulos e `Inter` para leitura.
+- **Gestão de Afastamentos**: Visualização em lista ou grade, filtros avançados e exportação de relatórios.
+- **Calendário Interativo**: Visualização mensal dos afastamentos.
 
-Para executar este projeto localmente ou realizar o build, você precisará dos seguintes softwares instalados:
+## 🛠️ Tecnologias
 
-### 1. Node.js (Ambiente de Execução)
+- **Frontend**: React, Vite
+- **UI/UX**: Tailwind CSS, ShadCN UI, Lucide Icons
+- **Database**: sql.js (SQLite WASM)
+- **Deploy**: GitHub Pages
 
-* **Versão Recomendada**: v18 LTS ou superior.
-* **Download Oficial**: [https://nodejs.org/pt-br/download](https://nodejs.org/pt-br/download)
-* *Nota*: Ao instalar, certifique-se de marcar a opção para instalar o NPM (Node Package Manager).
+## 📦 Instalação e Execução
 
-### 2. Git (Controle de Versão)
+### Pré-requisitos
 
-* Necessário para clonar o repositório.
-* **Download Oficial**: [https://git-scm.com/downloads](https://git-scm.com/downloads)
+- Node.js (v18+)
 
-## 🛠️ Instalação e Execução
+### Passo a Passo
 
-Siga os passos abaixo para rodar o projeto em sua máquina:
-
-1. **Clone o repositório** (ou extraia os arquivos se baixou o ZIP):
+1. Clone o repositório:
 
     ```bash
-    git clone https://seu-repositorio-url.git
-    cd agenda-leave-sync
+    git clone https://github.com/pliniou/Project_Ausencias.git
+    cd Project_Ausencias
     ```
 
-2. **Instale as dependências**:
-    Abra o terminal na pasta do projeto e execute:
+2. Instale as dependências:
 
     ```bash
     npm install
     ```
 
-    *Isso baixará todas as bibliotecas necessárias listadas no `package.json`.*
+3. Copie o binário do SQLite (necessário apenas na primeira vez ou se limpar a pasta public):
 
-3. **Inicie o servidor de desenvolvimento**:
-    Para ver o site rodando localmente com atualização automática:
+    ```bash
+    cp node_modules/sql.js/dist/sql-wasm.wasm public/
+    ```
+
+4. Rode o servidor de desenvolvimento:
 
     ```bash
     npm run dev
     ```
 
-    Acesse o link exibido no terminal (geralmente `http://localhost:5173`).
+## 🔑 Acesso Padrão
 
-4. **Gerar versão de produção (Build)**:
-    Para criar os arquivos finais otimizados para hospedagem:
+Ao iniciar o sistema pela primeira vez, um usuário administrador é criado automaticamente:
+
+- **Usuário**: `admin`
+- **Senha**: `admin123`
+
+> **Nota**: Recomenda-se alterar a senha imediatamente após o primeiro login.
+
+## 🌐 Deploy no GitHub Pages
+
+O projeto já está configurado para deploy automatizado.
+
+1. Gere o build de produção:
 
     ```bash
     npm run build
     ```
 
-    Os arquivos serão gerados na pasta `dist/`.
+2. Faça o deploy:
 
-## 📦 Estrutura Tecnológica
+    ```bash
+    npm run deploy
+    ```
 
-* **React 18**: Biblioteca principal para interfaces.
-* **Vite**: Ferramenta de build extremamente rápida.
-* **Tailwind CSS**: Framework de estilização utilitária.
-* **Radix UI**: Componentes acessíveis (modais, popovers).
-* **React Hook Form + Zod**: Gerenciamento e validação robusta de formulários.
-* **Date-fns**: Manipulação precisa de datas.
-* **Lucide React**: Ícones modernos e vetoriais.
+O sistema estará acessível em: `https://pliniou.github.io/Project_Ausencias/`
 
-## 🤝 Contribuição
+## 📄 Estrutura do Banco de Dados
 
-Mantenha o padrão de código estabelecido (ESLint) e utilize os tokens de design em `src/styles/design-tokens.css` para manter a consistência visual da marca.
+O banco de dados é um arquivo SQLite armazenado no `IndexedDB` do navegador do usuário.
+**Atenção**: Como é um deploy estático (Serverless), os dados **não são compartilhados** entre diferentes computadores. Cada usuário tem sua própria instância local dos dados.
+
+---
+Desenvolvido com ❤️ por Antigravity.
