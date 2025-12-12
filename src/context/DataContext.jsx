@@ -117,8 +117,6 @@ export function DataProvider({ children }) {
         setHolidays(prev => [...prev, { ...holiday, id: generateId() }]);
     };
 
-    // ... validateVacationRule to be added to return value ...
-
     const updateHoliday = (id, updates) => {
         setHolidays(prev => prev.map(h => h.id === id ? { ...h, ...updates } : h));
     };

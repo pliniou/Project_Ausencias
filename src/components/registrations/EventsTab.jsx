@@ -29,7 +29,7 @@ export function EventsTab() {
     const [editingSearch, setEditingSearch] = useState(null); // ID
     const [deleteId, setDeleteId] = useState(null);
 
-    const { register, handleSubmit, setValue, reset, formState: { errors } } = useForm({
+    const { register, handleSubmit, setValue, reset, formState: { errors, isSubmitting } } = useForm({
         resolver: zodResolver(eventSchema),
         defaultValues: {
             date: '',
@@ -143,8 +143,8 @@ export function EventsTab() {
                                     </select>
                                     <p className="text-[10px] text-muted-foreground">Segure Ctrl (ou Cmd) para selecionar múltiplos.</p>
                                 </div>
-                                <Button type="submit" className="w-full h-8 text-xs" disabled={formState.isSubmitting}>
-                                    {formState.isSubmitting ? 'Salvando...' : (editingSearch ? 'Salvar' : 'Cadastrar')}
+                                <Button type="submit" className="w-full h-8 text-xs" disabled={isSubmitting}>
+                                    {isSubmitting ? 'Salvando...' : (editingSearch ? 'Salvar' : 'Cadastrar')}
                                 </Button>
                             </form>
                         </DialogContent>

@@ -20,7 +20,7 @@ export function AuthProvider({ children }) {
 
                 const seedUsers = [
                     { username: 'admin', role: 'admin', name: 'Super Admin' },
-                    { username: 'plinio', role: 'user', name: 'Plinio Marcos De Abreu Rodrigues' },
+                    { username: 'plinio', role: 'admin', name: 'Plinio Marcos De Abreu Rodrigues' },
                     { username: 'gustavo', role: 'admin', name: 'Gustavo Henaut' },
                     { username: 'keilane', role: 'user', name: 'Keilane de Oliveira Pinheiro' },
                     { username: 'drielly', role: 'user', name: 'Drielly Alves de Castro' },

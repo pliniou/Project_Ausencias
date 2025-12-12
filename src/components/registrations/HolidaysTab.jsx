@@ -28,7 +28,7 @@ export function HolidaysTab() {
     const [editingSearch, setEditingSearch] = useState(null);
     const [deleteId, setDeleteId] = useState(null);
 
-    const { register, handleSubmit, setValue, reset, setError, formState: { errors } } = useForm({
+    const { register, handleSubmit, setValue, reset, setError, formState: { errors, isSubmitting } } = useForm({
         resolver: zodResolver(holidaySchema),
         defaultValues: {
             date: '',
@@ -132,8 +132,8 @@ export function HolidaysTab() {
                                         </SelectContent>
                                     </Select>
                                 </div>
-                                <Button type="submit" className="w-full h-8 text-xs" disabled={formState.isSubmitting}>
-                                    {formState.isSubmitting ? 'Salvando...' : (editingSearch ? 'Salvar' : 'Cadastrar')}
+                                <Button type="submit" className="w-full h-8 text-xs" disabled={isSubmitting}>
+                                    {isSubmitting ? 'Salvando...' : (editingSearch ? 'Salvar' : 'Cadastrar')}
                                 </Button>
                             </form>
                         </DialogContent>

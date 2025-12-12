@@ -10,25 +10,27 @@ const variantStyles = {
 
 const textStyles = {
     default: 'text-foreground',
-    primary: 'text-primary-foreground',
-    success: 'text-primary-foreground',
-    warning: 'text-primary-foreground',
-    danger: 'text-primary-foreground',
+    primary: 'text-white drop-shadow-md',
+    success: 'text-white drop-shadow-md',
+    warning: 'text-white drop-shadow-md',
+    danger: 'text-white drop-shadow-md',
 };
 
 export function StatCard({ title, value, subtitle, icon, variant = 'default', className }) {
+    const isColored = variant !== 'default';
+
     return (
         <div className={cn('stat-card', variantStyles[variant], className)}>
             <div className="flex items-start justify-between">
                 <div>
-                    <p className={cn('text-sm font-medium opacity-80', textStyles[variant])}>{title}</p>
+                    <p className={cn('text-sm font-medium', textStyles[variant], isColored && 'opacity-95')}>{title}</p>
                     <p className={cn('mt-2 text-3xl font-display font-bold', textStyles[variant])}>{value}</p>
                     {subtitle && (
-                        <p className={cn('mt-1 text-sm opacity-70', textStyles[variant])}>{subtitle}</p>
+                        <p className={cn('mt-1 text-sm', textStyles[variant], isColored && 'opacity-90')}>{subtitle}</p>
                     )}
                 </div>
-                <div className={cn('rounded-xl p-3', variant === 'default' ? 'bg-primary/10' : 'bg-white/20')}>
-                    <div className={cn(variant === 'default' ? 'text-primary' : 'text-white')}>
+                <div className={cn('rounded-xl p-3', variant === 'default' ? 'bg-primary/10' : 'bg-white/20 backdrop-blur-sm')}>
+                    <div className={cn(variant === 'default' ? 'text-primary' : 'text-white drop-shadow-lg')}>
                         {icon}
                     </div>
                 </div>

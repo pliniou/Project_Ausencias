@@ -30,7 +30,7 @@ export function EmployeesTab() {
     const [editingSearch, setEditingSearch] = useState(null); // ID if editing
     const [deleteId, setDeleteId] = useState(null);
 
-    const { register, handleSubmit, setValue, reset, formState: { errors } } = useForm({
+    const { register, handleSubmit, setValue, reset, formState: { errors, isSubmitting } } = useForm({
         resolver: zodResolver(employeeSchema),
         defaultValues: {
             name: '',
@@ -170,8 +170,8 @@ export function EmployeesTab() {
                                         </div>
                                     </div>
                                 </div>
-                                <Button type="submit" className="w-full h-8 text-xs" disabled={formState.isSubmitting}>
-                                    {formState.isSubmitting ? 'Salvando...' : (editingSearch ? 'Salvar Alterações' : 'Cadastrar')}
+                                <Button type="submit" className="w-full h-8 text-xs" disabled={isSubmitting}>
+                                    {isSubmitting ? 'Salvando...' : (editingSearch ? 'Salvar Alterações' : 'Cadastrar')}
                                 </Button>
                             </form>
                         </DialogContent>

@@ -128,25 +128,25 @@ function VacationProgressCard({ employee }) {
     const percentage = (usedDays / 30) * 100;
 
     return (
-        <div className="p-4 bg-card rounded-lg border border-border hover:shadow-md transition-all duration-200">
+        <div className="p-4 bg-card rounded-lg border-2 border-border hover:shadow-lg hover:border-primary/30 transition-all duration-200">
             <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-full bg-primary/15 flex items-center justify-center ring-1 ring-primary/20">
                         <User className="h-5 w-5 text-primary" />
                     </div>
                     <div>
                         <h4 className="font-semibold text-sm text-foreground">{employee.name}</h4>
-                        <p className="text-xs text-muted-foreground">{employee.role}</p>
+                        <p className="text-xs text-muted-foreground font-medium">{employee.role}</p>
                     </div>
                 </div>
-                <span className="text-xs font-bold text-foreground px-2 py-1 bg-muted rounded">
+                <span className="text-xs font-bold text-foreground px-2.5 py-1 bg-primary/10 text-primary rounded-md border border-primary/20">
                     {employee.vacationBalance || 0} dias
                 </span>
             </div>
             <div className="space-y-2">
-                <div className="flex justify-between text-xs text-muted-foreground">
-                    <span>Utilizados: {usedDays} dias</span>
-                    <span>{percentage.toFixed(0)}%</span>
+                <div className="flex justify-between text-xs">
+                    <span className="text-muted-foreground font-medium">Utilizados: {usedDays} dias</span>
+                    <span className="text-foreground font-bold">{percentage.toFixed(0)}%</span>
                 </div>
                 <Progress value={percentage} className="h-2" />
             </div>
@@ -305,32 +305,32 @@ export default function Index() {
                                 </div>
                             ) : (
                                 employeesAwayToday.map(item => (
-                                    <div key={item.id} className="p-4 bg-muted/50 rounded-lg border border-border hover:shadow-md transition-all duration-200">
+                                    <div key={item.id} className="p-4 bg-muted/30 rounded-lg border-2 border-border hover:shadow-lg hover:border-warning/40 transition-all duration-200">
                                         <div className="flex items-start gap-3 mb-3">
-                                            <div className="w-10 h-10 rounded-full bg-warning/10 flex items-center justify-center flex-shrink-0">
+                                            <div className="w-10 h-10 rounded-full bg-warning/15 flex items-center justify-center flex-shrink-0 ring-1 ring-warning/30">
                                                 <User className="h-5 w-5 text-warning" />
                                             </div>
                                             <div className="flex-1 min-w-0">
                                                 <h4 className="font-semibold text-sm text-foreground truncate">
                                                     {item.employee.name}
                                                 </h4>
-                                                <p className="text-xs text-muted-foreground truncate">
+                                                <p className="text-xs text-muted-foreground font-medium truncate">
                                                     {item.employee.role}
                                                 </p>
                                             </div>
                                         </div>
                                         <div className="space-y-2">
                                             <LeaveBadge type={item.type} />
-                                            <div className="text-xs text-muted-foreground">
+                                            <div className="text-xs">
                                                 <div className="flex justify-between">
-                                                    <span>Início:</span>
-                                                    <span className="font-medium text-foreground">
+                                                    <span className="text-muted-foreground font-medium">Início:</span>
+                                                    <span className="font-semibold text-foreground">
                                                         {new Date(item.startDate).toLocaleDateString('pt-BR')}
                                                     </span>
                                                 </div>
                                                 <div className="flex justify-between">
-                                                    <span>Término:</span>
-                                                    <span className="font-medium text-foreground">
+                                                    <span className="text-muted-foreground font-medium">Término:</span>
+                                                    <span className="font-semibold text-foreground">
                                                         {new Date(item.endDate).toLocaleDateString('pt-BR')}
                                                     </span>
                                                 </div>
