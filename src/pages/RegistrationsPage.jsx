@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Plus, Trash2, Users, Calendar, Building } from 'lucide-react';
+import { PermissionGate } from '@/components/PermissionGate';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -97,64 +98,66 @@ function EmployeesTab() {
                 <p className="text-sm text-muted-foreground">
                     {employees.length} colaborador(es) cadastrado(s)
                 </p>
-                <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                    <DialogTrigger asChild>
-                        <Button className="gap-2">
-                            <Plus className="h-4 w-4" />
-                            Novo Colaborador
-                        </Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                        <DialogHeader>
-                            <DialogTitle className="font-display">Cadastrar Colaborador</DialogTitle>
-                        </DialogHeader>
-                        <form onSubmit={handleSubmit} className="space-y-4">
-                            <div className="space-y-2">
-                                <Label>Nome Completo *</Label>
-                                <Input
-                                    value={formData.name}
-                                    onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                                    placeholder="Digite o nome"
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <Label>Cargo *</Label>
-                                <Select value={formData.role} onValueChange={(v) => setFormData(prev => ({ ...prev, role: v }))}>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Selecione o cargo" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {roles.map((role) => (
-                                            <SelectItem key={role} value={role}>{role}</SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                            <div className="space-y-2">
-                                <Label>Departamento *</Label>
-                                <Select value={formData.department} onValueChange={(v) => setFormData(prev => ({ ...prev, department: v }))}>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Selecione o departamento" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {departments.map((dept) => (
-                                            <SelectItem key={dept} value={dept}>{dept}</SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                            <div className="space-y-2">
-                                <Label>Saldo de Férias (dias)</Label>
-                                <Input
-                                    type="number"
-                                    value={formData.vacationBalance}
-                                    onChange={(e) => setFormData(prev => ({ ...prev, vacationBalance: parseInt(e.target.value) || 0 }))}
-                                />
-                            </div>
-                            <Button type="submit" className="w-full">Cadastrar</Button>
-                        </form>
-                    </DialogContent>
-                </Dialog>
+                <PermissionGate roles={['admin', 'superadmin']}>
+                    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                        <DialogTrigger asChild>
+                            <Button className="gap-2">
+                                <Plus className="h-4 w-4" />
+                                Novo Colaborador
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle className="font-display">Cadastrar Colaborador</DialogTitle>
+                            </DialogHeader>
+                            <form onSubmit={handleSubmit} className="space-y-4">
+                                <div className="space-y-2">
+                                    <Label>Nome Completo *</Label>
+                                    <Input
+                                        value={formData.name}
+                                        onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                                        placeholder="Digite o nome"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Cargo *</Label>
+                                    <Select value={formData.role} onValueChange={(v) => setFormData(prev => ({ ...prev, role: v }))}>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Selecione o cargo" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {roles.map((role) => (
+                                                <SelectItem key={role} value={role}>{role}</SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Departamento *</Label>
+                                    <Select value={formData.department} onValueChange={(v) => setFormData(prev => ({ ...prev, department: v }))}>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Selecione o departamento" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {departments.map((dept) => (
+                                                <SelectItem key={dept} value={dept}>{dept}</SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Saldo de Férias (dias)</Label>
+                                    <Input
+                                        type="number"
+                                        value={formData.vacationBalance}
+                                        onChange={(e) => setFormData(prev => ({ ...prev, vacationBalance: parseInt(e.target.value) || 0 }))}
+                                    />
+                                </div>
+                                <Button type="submit" className="w-full">Cadastrar</Button>
+                            </form>
+                        </DialogContent>
+                    </Dialog>
+                </PermissionGate>
             </div>
 
             <div className="bg-card rounded-2xl border border-border overflow-hidden">
@@ -185,14 +188,16 @@ function EmployeesTab() {
                                     </span>
                                 </TableCell>
                                 <TableCell>
-                                    <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        className="h-8 w-8 text-destructive hover:text-destructive"
-                                        onClick={() => setDeleteId(employee.id)}
-                                    >
-                                        <Trash2 className="h-4 w-4" />
-                                    </Button>
+                                    <PermissionGate roles={['admin', 'superadmin']}>
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            className="h-8 w-8 text-destructive hover:text-destructive"
+                                            onClick={() => setDeleteId(employee.id)}
+                                        >
+                                            <Trash2 className="h-4 w-4" />
+                                        </Button>
+                                    </PermissionGate>
                                 </TableCell>
                             </TableRow>
                         ))}
@@ -247,52 +252,54 @@ function HolidaysTab() {
                 <p className="text-sm text-muted-foreground">
                     {holidays.length} feriado(s) cadastrado(s)
                 </p>
-                <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                    <DialogTrigger asChild>
-                        <Button className="gap-2">
-                            <Plus className="h-4 w-4" />
-                            Novo Feriado
-                        </Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                        <DialogHeader>
-                            <DialogTitle className="font-display">Cadastrar Feriado</DialogTitle>
-                        </DialogHeader>
-                        <form onSubmit={handleSubmit} className="space-y-4">
-                            <div className="space-y-2">
-                                <Label>Data *</Label>
-                                <Input
-                                    type="date"
-                                    value={formData.date}
-                                    onChange={(e) => setFormData(prev => ({ ...prev, date: e.target.value }))}
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <Label>Nome *</Label>
-                                <Input
-                                    value={formData.name}
-                                    onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                                    placeholder="Ex: Natal"
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <Label>Tipo</Label>
-                                <Select value={formData.type} onValueChange={(v) => setFormData(prev => ({ ...prev, type: v }))}>
-                                    <SelectTrigger>
-                                        <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="NACIONAL">Nacional</SelectItem>
-                                        <SelectItem value="ESTADUAL">Estadual</SelectItem>
-                                        <SelectItem value="MUNICIPAL">Municipal</SelectItem>
-                                        <SelectItem value="PONTO_FACULTATIVO">Ponto Facultativo</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                            <Button type="submit" className="w-full">Cadastrar</Button>
-                        </form>
-                    </DialogContent>
-                </Dialog>
+                <PermissionGate roles={['admin', 'superadmin']}>
+                    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                        <DialogTrigger asChild>
+                            <Button className="gap-2">
+                                <Plus className="h-4 w-4" />
+                                Novo Feriado
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle className="font-display">Cadastrar Feriado</DialogTitle>
+                            </DialogHeader>
+                            <form onSubmit={handleSubmit} className="space-y-4">
+                                <div className="space-y-2">
+                                    <Label>Data *</Label>
+                                    <Input
+                                        type="date"
+                                        value={formData.date}
+                                        onChange={(e) => setFormData(prev => ({ ...prev, date: e.target.value }))}
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Nome *</Label>
+                                    <Input
+                                        value={formData.name}
+                                        onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                                        placeholder="Ex: Natal"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Tipo</Label>
+                                    <Select value={formData.type} onValueChange={(v) => setFormData(prev => ({ ...prev, type: v }))}>
+                                        <SelectTrigger>
+                                            <SelectValue />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="NACIONAL">Nacional</SelectItem>
+                                            <SelectItem value="ESTADUAL">Estadual</SelectItem>
+                                            <SelectItem value="MUNICIPAL">Municipal</SelectItem>
+                                            <SelectItem value="PONTO_FACULTATIVO">Ponto Facultativo</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                <Button type="submit" className="w-full">Cadastrar</Button>
+                            </form>
+                        </DialogContent>
+                    </Dialog>
+                </PermissionGate>
             </div>
 
             <div className="bg-card rounded-2xl border border-border overflow-hidden">
@@ -316,14 +323,16 @@ function HolidaysTab() {
                                     </span>
                                 </TableCell>
                                 <TableCell>
-                                    <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        className="h-8 w-8 text-destructive hover:text-destructive"
-                                        onClick={() => setDeleteId(holiday.id)}
-                                    >
-                                        <Trash2 className="h-4 w-4" />
-                                    </Button>
+                                    <PermissionGate roles={['admin', 'superadmin']}>
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            className="h-8 w-8 text-destructive hover:text-destructive"
+                                            onClick={() => setDeleteId(holiday.id)}
+                                        >
+                                            <Trash2 className="h-4 w-4" />
+                                        </Button>
+                                    </PermissionGate>
                                 </TableCell>
                             </TableRow>
                         ))}
@@ -378,71 +387,73 @@ function EventsTab() {
                 <p className="text-sm text-muted-foreground">
                     {companyEvents.length} evento(s) cadastrado(s)
                 </p>
-                <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                    <DialogTrigger asChild>
-                        <Button className="gap-2">
-                            <Plus className="h-4 w-4" />
-                            Novo Evento
-                        </Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                        <DialogHeader>
-                            <DialogTitle className="font-display">Cadastrar Evento</DialogTitle>
-                        </DialogHeader>
-                        <form onSubmit={handleSubmit} className="space-y-4">
-                            <div className="space-y-2">
-                                <Label>Data *</Label>
-                                <Input
-                                    type="date"
-                                    value={formData.date}
-                                    onChange={(e) => setFormData(prev => ({ ...prev, date: e.target.value }))}
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <Label>Nome *</Label>
-                                <Input
-                                    value={formData.name}
-                                    onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                                    placeholder="Ex: Reunião de Planejamento"
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <Label>Tipo</Label>
-                                <Select value={formData.type} onValueChange={(v) => setFormData(prev => ({ ...prev, type: v }))}>
-                                    <SelectTrigger>
-                                        <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="REUNIAO">Reunião</SelectItem>
-                                        <SelectItem value="TREINAMENTO">Treinamento</SelectItem>
-                                        <SelectItem value="EVENTO">Evento</SelectItem>
-                                        <SelectItem value="OUTRO">Outro</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                            <div className="space-y-2">
-                                <Label>Participantes (Segure Ctrl para selecionar múltiplos)</Label>
-                                <select
-                                    className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                                    multiple
-                                    value={formData.participants || []}
-                                    onChange={(e) => {
-                                        const selected = Array.from(e.target.selectedOptions, option => option.value);
-                                        setFormData(prev => ({ ...prev, participants: selected }));
-                                    }}
-                                    style={{ height: '120px' }}
-                                >
-                                    {employees.filter(e => e.status === 'ATIVO').map(emp => (
-                                        <option key={emp.id} value={emp.id}>
-                                            {emp.name}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-                            <Button type="submit" className="w-full">Cadastrar</Button>
-                        </form>
-                    </DialogContent>
-                </Dialog>
+                <PermissionGate roles={['admin', 'superadmin']}>
+                    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                        <DialogTrigger asChild>
+                            <Button className="gap-2">
+                                <Plus className="h-4 w-4" />
+                                Novo Evento
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle className="font-display">Cadastrar Evento</DialogTitle>
+                            </DialogHeader>
+                            <form onSubmit={handleSubmit} className="space-y-4">
+                                <div className="space-y-2">
+                                    <Label>Data *</Label>
+                                    <Input
+                                        type="date"
+                                        value={formData.date}
+                                        onChange={(e) => setFormData(prev => ({ ...prev, date: e.target.value }))}
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Nome *</Label>
+                                    <Input
+                                        value={formData.name}
+                                        onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                                        placeholder="Ex: Reunião de Planejamento"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Tipo</Label>
+                                    <Select value={formData.type} onValueChange={(v) => setFormData(prev => ({ ...prev, type: v }))}>
+                                        <SelectTrigger>
+                                            <SelectValue />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="REUNIAO">Reunião</SelectItem>
+                                            <SelectItem value="TREINAMENTO">Treinamento</SelectItem>
+                                            <SelectItem value="EVENTO">Evento</SelectItem>
+                                            <SelectItem value="OUTRO">Outro</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Participantes (Segure Ctrl para selecionar múltiplos)</Label>
+                                    <select
+                                        className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                        multiple
+                                        value={formData.participants || []}
+                                        onChange={(e) => {
+                                            const selected = Array.from(e.target.selectedOptions, option => option.value);
+                                            setFormData(prev => ({ ...prev, participants: selected }));
+                                        }}
+                                        style={{ height: '120px' }}
+                                    >
+                                        {employees.filter(e => e.status === 'ATIVO').map(emp => (
+                                            <option key={emp.id} value={emp.id}>
+                                                {emp.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <Button type="submit" className="w-full">Cadastrar</Button>
+                            </form>
+                        </DialogContent>
+                    </Dialog>
+                </PermissionGate>
             </div>
 
             <div className="bg-card rounded-2xl border border-border overflow-hidden">
@@ -471,14 +482,16 @@ function EventsTab() {
                                     </span>
                                 </TableCell>
                                 <TableCell>
-                                    <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        className="h-8 w-8 text-destructive hover:text-destructive"
-                                        onClick={() => setDeleteId(event.id)}
-                                    >
-                                        <Trash2 className="h-4 w-4" />
-                                    </Button>
+                                    <PermissionGate roles={['admin', 'superadmin']}>
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            className="h-8 w-8 text-destructive hover:text-destructive"
+                                            onClick={() => setDeleteId(event.id)}
+                                        >
+                                            <Trash2 className="h-4 w-4" />
+                                        </Button>
+                                    </PermissionGate>
                                 </TableCell>
                             </TableRow>
                         ))}
@@ -493,6 +506,6 @@ function EventsTab() {
                 title="Excluir Evento"
                 description="Tem certeza que deseja excluir este evento?"
             />
-        </div>
+        </div >
     );
 }

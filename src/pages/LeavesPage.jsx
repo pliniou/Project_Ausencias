@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { Plus, List, Grid, Download } from 'lucide-react';
 import { formatDateBR } from '@/lib/dateUtils';
+import { PermissionGate } from '@/components/PermissionGate';
 import { leaveTypeLabels } from '@/lib/types';
 import { LeaveForm } from '@/components/leaves/LeaveForm';
 import { LeaveCard } from '@/components/leaves/LeaveCard';
@@ -77,20 +78,22 @@ export default function LeavesPage() {
                         </Button>
                     </div>
 
-                    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                        <DialogTrigger asChild>
-                            <Button className="gap-2">
-                                <Plus className="h-4 w-4" />
-                                Novo Afastamento
-                            </Button>
-                        </DialogTrigger>
-                        <DialogContent className="max-w-2xl">
-                            <DialogHeader>
-                                <DialogTitle className="font-display">Registrar Novo Afastamento</DialogTitle>
-                            </DialogHeader>
-                            <LeaveForm onSuccess={() => setIsDialogOpen(false)} />
-                        </DialogContent>
-                    </Dialog>
+                    <PermissionGate roles={['admin', 'superadmin']}>
+                        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                            <DialogTrigger asChild>
+                                <Button className="gap-2">
+                                    <Plus className="h-4 w-4" />
+                                    Novo Afastamento
+                                </Button>
+                            </DialogTrigger>
+                            <DialogContent className="max-w-2xl">
+                                <DialogHeader>
+                                    <DialogTitle className="font-display">Registrar Novo Afastamento</DialogTitle>
+                                </DialogHeader>
+                                <LeaveForm onSuccess={() => setIsDialogOpen(false)} />
+                            </DialogContent>
+                        </Dialog>
+                    </PermissionGate>
                 </div>
             </div>
 
