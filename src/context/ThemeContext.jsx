@@ -13,10 +13,17 @@ export function ThemeProvider({ children }) {
         root.classList.remove('light', 'dark', 'sepia');
         root.classList.add(theme);
         localStorage.setItem('theme', theme);
+
+        // Force a repaint to ensure theme is applied immediately
+        void root.offsetHeight;
     }, [theme]);
 
+    const changeTheme = (newTheme) => {
+        setTheme(newTheme);
+    };
+
     return (
-        <ThemeContext.Provider value={{ theme, setTheme }}>
+        <ThemeContext.Provider value={{ theme, setTheme: changeTheme }}>
             {children}
         </ThemeContext.Provider>
     );

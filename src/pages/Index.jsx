@@ -1,12 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { Users, Calendar, Clock, TrendingUp, Plus, CalendarDays, Settings, ArrowRight, Info } from 'lucide-react';
+import { Users, Calendar, Clock, TrendingUp, Plus, CalendarDays, Settings, ArrowRight, Info, User } from 'lucide-react';
 import { StatCard } from '@/components/ui/StatCard';
-import { LeaveCard } from '@/components/leaves/LeaveCard';
 import { LeaveBadge } from '@/components/ui/LeaveBadge';
 import { Button } from '@/components/ui/button';
 import { useData } from '@/context/DataContext';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Progress } from '@/components/ui/progress';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 
 function BrasiliaClock() {
     const [time, setTime] = useState(new Date());
@@ -16,101 +17,179 @@ function BrasiliaClock() {
         return () => clearInterval(timer);
     }, []);
 
-    const formattedTime = time.toLocaleTimeString('pt-BR', { timeZone: 'America/Sao_Paulo', hour: '2-digit', minute: '2-digit' });
-    const formattedDate = time.toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo', weekday: 'long', day: '2-digit', month: 'long' });
+    const formattedTime = time.toLocaleTimeString('pt-BR', { timeZone: 'America/Sao_Paulo', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    const formattedDate = time.toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo', weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' });
 
     return (
-        <div className="flex flex-col items-start bg-black/20 backdrop-blur rounded-lg px-4 py-2 border border-white/10">
-            <span className="text-2xl font-bold text-white font-mono tracking-wider">{formattedTime}</span>
-            <span className="text-xs text-white/80 capitalize">{formattedDate}</span>
-            <span className="text-[10px] text-white/60 uppercase tracking-widest mt-1">Horário de Brasília</span>
+        <div className="flex flex-col items-center bg-gradient-to-br from-primary/10 to-secondary/10 backdrop-blur rounded-xl p-6 border-2 border-border shadow-lg">
+            <span className="text-4xl font-bold text-foreground font-mono tracking-wider">{formattedTime}</span>
+            <span className="text-sm text-muted-foreground capitalize mt-2">{formattedDate}</span>
+            <span className="text-xs text-muted-foreground uppercase tracking-widest mt-1">Horário de Brasília</span>
+        </div>
+    );
+}
+
+function MiniCalendar({ holidays }) {
+    const today = new Date();
+    const [currentMonth, setCurrentMonth] = useState(today);
+
+    const getDaysInMonth = (date) => {
+        const year = date.getFullYear();
+        const month = date.getMonth();
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+        const daysInMonth = lastDay.getDate();
+        const startingDayOfWeek = firstDay.getDay();
+
+        return { daysInMonth, startingDayOfWeek, year, month };
+    };
+
+    const { daysInMonth, startingDayOfWeek } = getDaysInMonth(currentMonth);
+    const days = [];
+
+    for (let i = 0; i < startingDayOfWeek; i++) {
+        days.push(null);
+    }
+
+    for (let day = 1; day <= daysInMonth; day++) {
+        days.push(day);
+    }
+
+    const isHoliday = (day) => {
+        if (!day) return false;
+        const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
+        const dateString = date.toISOString().split('T')[0];
+        return holidays.some(h => h.date === dateString);
+    };
+
+    const isWeekend = (dayIndex) => {
+        if (!days[dayIndex]) return false;
+        const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), days[dayIndex]);
+        return date.getDay() === 0 || date.getDay() === 6;
+    };
+
+    const isToday = (day) => {
+        if (!day) return false;
+        return day === today.getDate() &&
+            currentMonth.getMonth() === today.getMonth() &&
+            currentMonth.getFullYear() === today.getFullYear();
+    };
+
+    const monthName = currentMonth.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+
+    return (
+        <div className="bg-card rounded-xl border-2 border-border p-4 shadow-lg">
+            <div className="flex items-center justify-between mb-4">
+                <h3 className="font-bold text-lg text-foreground capitalize">{monthName}</h3>
+            </div>
+            <div className="grid grid-cols-7 gap-1">
+                {['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'].map((day, i) => (
+                    <div key={day} className={`text-center text-xs font-bold py-1 ${i === 0 || i === 6 ? 'text-destructive' : 'text-muted-foreground'}`}>
+                        {day}
+                    </div>
+                ))}
+                {days.map((day, index) => (
+                    <div
+                        key={index}
+                        className={`
+                            aspect-square flex items-center justify-center text-sm rounded-lg transition-all duration-200
+                            ${day ? 'cursor-default' : ''}
+                            ${isToday(day) ? 'bg-primary text-primary-foreground font-bold shadow-md ring-2 ring-primary/50' : ''}
+                            ${!isToday(day) && isHoliday(day) ? 'bg-warning/30 text-warning-foreground font-semibold border border-warning' : ''}
+                            ${!isToday(day) && !isHoliday(day) && isWeekend(index) ? 'bg-destructive/20 text-destructive font-medium' : ''}
+                            ${!isToday(day) && !isHoliday(day) && !isWeekend(index) && day ? 'text-foreground hover:bg-muted' : ''}
+                            ${!day ? 'text-transparent' : ''}
+                        `}
+                    >
+                        {day || ''}
+                    </div>
+                ))}
+            </div>
+            <div className="mt-4 space-y-1 text-xs">
+                <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded bg-primary" />
+                    <span className="text-muted-foreground">Hoje</span>
+                </div>
+                <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded bg-warning/30 border border-warning" />
+                    <span className="text-muted-foreground">Feriado</span>
+                </div>
+                <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded bg-destructive/20" />
+                    <span className="text-muted-foreground">Fim de semana</span>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+function VacationProgressCard({ employee }) {
+    const usedDays = 30 - (employee.vacationBalance || 0);
+    const percentage = (usedDays / 30) * 100;
+
+    return (
+        <div className="p-4 bg-card rounded-lg border border-border hover:shadow-md transition-all duration-200">
+            <div className="flex items-start justify-between mb-3">
+                <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                        <User className="h-5 w-5 text-primary" />
+                    </div>
+                    <div>
+                        <h4 className="font-semibold text-sm text-foreground">{employee.name}</h4>
+                        <p className="text-xs text-muted-foreground">{employee.role}</p>
+                    </div>
+                </div>
+                <span className="text-xs font-bold text-foreground px-2 py-1 bg-muted rounded">
+                    {employee.vacationBalance || 0} dias
+                </span>
+            </div>
+            <div className="space-y-2">
+                <div className="flex justify-between text-xs text-muted-foreground">
+                    <span>Utilizados: {usedDays} dias</span>
+                    <span>{percentage.toFixed(0)}%</span>
+                </div>
+                <Progress value={percentage} className="h-2" />
+            </div>
         </div>
     );
 }
 
 export default function Index() {
-    const { employees, leaves, getActiveLeaves, getPlannedLeaves, deleteLeave } = useData();
+    const { employees, leaves, holidays, getTodayLeaves } = useData();
 
-    const activeLeaves = getActiveLeaves();
-    const plannedLeaves = getPlannedLeaves();
+    const todayLeaves = getTodayLeaves();
     const activeEmployees = employees.filter(e => e.status === 'ATIVO');
+    const plannedLeaves = leaves.filter(l => l.status === 'PLANEJADO');
 
-    // Calculate most common leave types
-    const leaveTypeCount = leaves.reduce((acc, leave) => {
-        acc[leave.type] = (acc[leave.type] || 0) + 1;
-        return acc;
-    }, {});
-
-    const topLeaveTypes = Object.entries(leaveTypeCount)
-        .sort(([, a], [, b]) => b - a)
-        .slice(0, 4);
+    // Employees away today
+    const employeesAwayToday = useMemo(() => {
+        return todayLeaves.map(leave => {
+            const employee = employees.find(e => e.id === leave.employeeId);
+            return { ...leave, employee };
+        }).filter(item => item.employee);
+    }, [todayLeaves, employees]);
 
     return (
-        <div className="space-y-8 animate-fade-in relative">
-            {/* Hero Section with Quick Actions */}
-            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-blue-900 to-slate-900 p-8 md:p-12 shadow-2xl border border-white/5">
-                {/* Background Mesh */}
-                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/20 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2 pointer-events-none" />
-                <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-indigo-500/10 rounded-full blur-[80px] translate-y-1/2 -translate-x-1/2 pointer-events-none" />
-
-                <div className="relative z-10 grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-                    <div className="lg:col-span-2 flex flex-col justify-between h-full space-y-8">
-                        <div>
-                            <div className="flex items-center gap-3 mb-6">
-                                <span className="px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-white bg-white/10 backdrop-blur-md rounded-full ring-1 ring-white/20">
-                                    Versão 2.4.0
-                                </span>
-                            </div>
-
-                            <h1 className="text-4xl md:text-5xl font-display font-bold text-white mb-6 leading-tight max-w-2xl">
-                                Gestão Inteligente de <br />
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-200 to-white">
-                                    Jornadas e Ausências
-                                </span>
-                            </h1>
-
-                            <p className="text-white/70 text-lg leading-relaxed max-w-xl">
-                                Acompanhe o fluxo de trabalho, gerencie escalas e garanta a conformidade com as diretrizes da empresa.
-                            </p>
-                        </div>
-
-                        <BrasiliaClock />
+        <div className="space-y-6 animate-fade-in pb-8">
+            {/* Header with Clock */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="lg:col-span-2">
+                    <div className="space-y-2">
+                        <h1 className="text-4xl font-bold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
+                            Dashboard
+                        </h1>
+                        <p className="text-muted-foreground text-lg">
+                            Visão geral do sistema de gestão de ausências
+                        </p>
                     </div>
-
-                    {/* Quick Actions - Compact */}
-                    <div className="lg:col-span-1 self-center">
-                        <div className="bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/10 shadow-2xl">
-                            <h3 className="font-display font-semibold text-white mb-4 text-sm uppercase tracking-wider flex items-center gap-2">
-                                <TrendingUp className="h-4 w-4" />
-                                Acesso Rápido
-                            </h3>
-                            <div className="space-y-2">
-                                <Link to="/afastamentos" className="block">
-                                    <Button size="sm" className="w-full justify-start gap-3 bg-primary text-primary-foreground hover:bg-primary/90 font-semibold shadow-md border-0 h-10">
-                                        <Plus className="h-4 w-4" />
-                                        Novo Afastamento
-                                    </Button>
-                                </Link>
-                                <Link to="/calendario" className="block">
-                                    <Button size="sm" variant="outline" className="w-full justify-start gap-3 border-white/20 text-white hover:bg-white/10 hover:text-white h-10 bg-transparent">
-                                        <CalendarDays className="h-4 w-4" />
-                                        Calendário
-                                    </Button>
-                                </Link>
-                                <Link to="/cadastros" className="block">
-                                    <Button size="sm" variant="outline" className="w-full justify-start gap-3 border-white/20 text-white hover:bg-white/10 hover:text-white h-10 bg-transparent">
-                                        <Settings className="h-4 w-4" />
-                                        Cadastros
-                                    </Button>
-                                </Link>
-                            </div>
-                        </div>
-                    </div>
+                </div>
+                <div>
+                    <BrasiliaClock />
                 </div>
             </div>
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <StatCard
                     title="Total de Colaboradores"
                     value={activeEmployees.length}
@@ -120,7 +199,7 @@ export default function Index() {
                 />
                 <StatCard
                     title="Ausentes Hoje"
-                    value={activeLeaves.length}
+                    value={todayLeaves.length}
                     subtitle="em afastamento"
                     icon={<Clock className="h-6 w-6" />}
                     variant="warning"
@@ -152,47 +231,121 @@ export default function Index() {
                 </TooltipProvider>
             </div>
 
-            {/* Content Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* Active Leaves */}
-                <div className="lg:col-span-2 space-y-6">
-                    <div className="flex items-center justify-between">
-                        <h2 className="text-2xl font-display font-bold text-foreground">
-                            Afastamentos Ativos
-                        </h2>
-                        <Link to="/afastamentos" className="text-sm text-primary hover:underline flex items-center gap-1 font-medium bg-primary/10 px-3 py-1.5 rounded-full hover:bg-primary/20 transition-colors">
-                            Ver todos <ArrowRight className="h-4 w-4" />
-                        </Link>
-                    </div>
-
-                    {activeLeaves.length === 0 ? (
-                        <div className="bg-card rounded-2xl border border-border p-12 text-center shadow-sm">
-                            <div className="w-20 h-20 mx-auto mb-6 rounded-3xl bg-primary/10 flex items-center justify-center">
-                                <Users className="h-10 w-10 text-primary" />
-                            </div>
-                            <h3 className="font-display font-bold text-xl text-foreground mb-3">
-                                Equipe completa!
-                            </h3>
-                            <p className="text-muted-foreground">
-                                Nenhum colaborador está ausente hoje.
-                            </p>
-                        </div>
-                    ) : (
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {activeLeaves.slice(0, 4).map((leave) => (
-                                <LeaveCard
-                                    key={leave.id}
-                                    leave={leave}
-                                    onDelete={deleteLeave}
-                                />
+            {/* Main 3-Column Layout */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {/* Column 1: Main Content - Vacation Progress */}
+                <div className="lg:col-span-1 space-y-6">
+                    <Card className="border-2">
+                        <CardHeader>
+                            <CardTitle className="flex items-center justify-between">
+                                <span>Saldo de Férias</span>
+                                <Link to="/cadastros" className="text-sm text-primary hover:underline flex items-center gap-1 font-medium">
+                                    Ver todos <ArrowRight className="h-4 w-4" />
+                                </Link>
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-3 max-h-[600px] overflow-y-auto">
+                            {activeEmployees.slice(0, 6).map(employee => (
+                                <VacationProgressCard key={employee.id} employee={employee} />
                             ))}
-                        </div>
-                    )}
+                        </CardContent>
+                    </Card>
+
+                    {/* Quick Actions */}
+                    <Card className="border-2 bg-gradient-to-br from-primary/5 to-secondary/5">
+                        <CardHeader>
+                            <CardTitle className="text-base">Ações Rápidas</CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-2">
+                            <Link to="/afastamentos" className="block">
+                                <Button className="w-full justify-start gap-3 h-11 shadow-md">
+                                    <Plus className="h-4 w-4" />
+                                    Novo Afastamento
+                                </Button>
+                            </Link>
+                            <Link to="/calendario" className="block">
+                                <Button variant="outline" className="w-full justify-start gap-3 h-11">
+                                    <CalendarDays className="h-4 w-4" />
+                                    Ver Calendário
+                                </Button>
+                            </Link>
+                            <Link to="/cadastros" className="block">
+                                <Button variant="outline" className="w-full justify-start gap-3 h-11">
+                                    <Settings className="h-4 w-4" />
+                                    Gerenciar Cadastros
+                                </Button>
+                            </Link>
+                        </CardContent>
+                    </Card>
                 </div>
 
-                {/* Stats Sidebar - Empty for now or reserved for other widgets */}
-                <div className="space-y-6">
+                {/* Column 2: Employees Away Today */}
+                <div className="lg:col-span-1">
+                    <Card className="border-2 h-full">
+                        <CardHeader>
+                            <CardTitle className="flex items-center justify-between">
+                                <span>Afastados Hoje</span>
+                                <span className="text-sm font-normal text-muted-foreground">
+                                    {employeesAwayToday.length} {employeesAwayToday.length === 1 ? 'pessoa' : 'pessoas'}
+                                </span>
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-3 max-h-[600px] overflow-y-auto">
+                            {employeesAwayToday.length === 0 ? (
+                                <div className="text-center py-12">
+                                    <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-success/10 flex items-center justify-center">
+                                        <Users className="h-8 w-8 text-success" />
+                                    </div>
+                                    <h3 className="font-bold text-lg text-foreground mb-2">
+                                        Equipe Completa!
+                                    </h3>
+                                    <p className="text-muted-foreground text-sm">
+                                        Nenhum colaborador está ausente hoje.
+                                    </p>
+                                </div>
+                            ) : (
+                                employeesAwayToday.map(item => (
+                                    <div key={item.id} className="p-4 bg-muted/50 rounded-lg border border-border hover:shadow-md transition-all duration-200">
+                                        <div className="flex items-start gap-3 mb-3">
+                                            <div className="w-10 h-10 rounded-full bg-warning/10 flex items-center justify-center flex-shrink-0">
+                                                <User className="h-5 w-5 text-warning" />
+                                            </div>
+                                            <div className="flex-1 min-w-0">
+                                                <h4 className="font-semibold text-sm text-foreground truncate">
+                                                    {item.employee.name}
+                                                </h4>
+                                                <p className="text-xs text-muted-foreground truncate">
+                                                    {item.employee.role}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <LeaveBadge type={item.type} />
+                                            <div className="text-xs text-muted-foreground">
+                                                <div className="flex justify-between">
+                                                    <span>Início:</span>
+                                                    <span className="font-medium text-foreground">
+                                                        {new Date(item.startDate).toLocaleDateString('pt-BR')}
+                                                    </span>
+                                                </div>
+                                                <div className="flex justify-between">
+                                                    <span>Término:</span>
+                                                    <span className="font-medium text-foreground">
+                                                        {new Date(item.endDate).toLocaleDateString('pt-BR')}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))
+                            )}
+                        </CardContent>
+                    </Card>
+                </div>
 
+                {/* Column 3: Mini Calendar */}
+                <div className="lg:col-span-1">
+                    <MiniCalendar holidays={holidays} />
                 </div>
             </div>
         </div>

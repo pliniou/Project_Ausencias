@@ -8,28 +8,28 @@
   :root {
     /* --- Light Theme (Professional Blue/Teal) --- */
     --background: 210 30% 98%;
-    --foreground: 215 25% 15%;
+    --foreground: 215 35% 10%;
 
     --card: 0 0% 100%;
-    --card-foreground: 215 25% 15%;
+    --card-foreground: 215 35% 10%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 215 25% 15%;
+    --popover-foreground: 215 35% 10%;
 
     /* Primary - Professional Blue */
     --primary: 221 83% 35%;
     --primary-foreground: 0 0% 100%;
 
     /* Secondary - Teal */
-    --secondary: 173 58% 39%;
+    --secondary: 173 58% 35%;
     --secondary-foreground: 0 0% 100%;
 
     /* Accent - Vibrant Purple */
     --accent: 258 90% 66%;
-    --accent-foreground: 0 0% 100%;
+    --accent-foreground: 0 0% 15%;
 
     --muted: 210 25% 96%;
-    --muted-foreground: 215 15% 50%;
+    --muted-foreground: 215 20% 40%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
@@ -41,13 +41,13 @@
     --radius: 0.75rem;
 
     /* Success/Warning/Info */
-    --success: 160 84% 39%;
-    --warning: 25 95% 53%;
-    --info: 199 89% 48%;
+    --success: 160 84% 35%;
+    --warning: 25 95% 45%;
+    --info: 199 89% 42%;
 
     /* Sidebar */
     --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 215 25% 15%;
+    --sidebar-foreground: 215 35% 10%;
     --sidebar-primary: 221 83% 35%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 210 25% 96%;
@@ -56,13 +56,13 @@
     --sidebar-ring: 221 83% 35%;
 
     /* Status */
-    --status-active: 160 84% 39%;
-    --status-planned: 25 95% 53%;
-    --status-ended: 215 15% 50%;
+    --status-active: 160 84% 35%;
+    --status-planned: 25 95% 45%;
+    --status-ended: 215 20% 40%;
 
     /* Gradients */
     --gradient-primary: linear-gradient(135deg, hsl(221 83% 35%) 0%, hsl(258 90% 66%) 100%);
-    --gradient-secondary: linear-gradient(135deg, hsl(173 58% 39%) 0%, hsl(199 89% 48%) 100%);
+    --gradient-secondary: linear-gradient(135deg, hsl(173 58% 35%) 0%, hsl(199 89% 42%) 100%);
   }
 
   .dark {

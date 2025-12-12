@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useData } from '@/context/DataContext';
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
 import {
     Table,
     TableBody,
@@ -32,8 +33,12 @@ import { format } from "date-fns";
 const AdminDashboard = () => {
     const { getAllUsers, registerUser, deleteUser, changePassword } = useAuth();
     const { employees } = useData();
+    const { toast } = useToast();
     const [users, setUsers] = useState([]);
     const [isOpen, setIsOpen] = useState(false);
+    const [passwordDialogOpen, setPasswordDialogOpen] = useState(false);
+    const [selectedUserId, setSelectedUserId] = useState(null);
+    const [newPassword, setNewPassword] = useState('');
 
     // Form State
     const [username, setUsername] = useState('');
@@ -60,6 +65,10 @@ const AdminDashboard = () => {
             await registerUser(username, password, role, empId);
             setIsOpen(false);
             loadUsers();
+            toast({
+                title: "Usuário criado com sucesso!",
+                description: `O usuário ${username} foi cadastrado.`,
+            });
             // Reset form
             setUsername('');
             setPassword('');
@@ -67,22 +76,55 @@ const AdminDashboard = () => {
             setEmployeeId('none');
         } catch (err) {
             setError(err.message);
+            toast({
+                variant: "destructive",
+                title: "Erro ao criar usuário",
+                description: err.message,
+            });
         }
     };
 
     const handleDelete = (id) => {
-        if (confirm('Tem certeza?')) {
-            deleteUser(id);
-            loadUsers();
+        if (confirm('Tem certeza que deseja excluir este usuário?')) {
+            try {
+                deleteUser(id);
+                loadUsers();
+                toast({
+                    title: "Usuário excluído",
+                    description: "O usuário foi removido do sistema.",
+                });
+            } catch (err) {
+                toast({
+                    variant: "destructive",
+                    title: "Erro ao excluir usuário",
+                    description: err.message,
+                });
+            }
         }
     };
 
-    const handlePasswordReset = async (id) => {
-        const newPass = prompt("Nova senha para o usuário:");
-        if (newPass) {
-            await changePassword(id, newPass);
-            alert("Senha alterada com sucesso!");
+    const handlePasswordChange = async (e) => {
+        e.preventDefault();
+        try {
+            await changePassword(selectedUserId, newPassword);
+            setPasswordDialogOpen(false);
+            setNewPassword('');
+            toast({
+                title: "Senha alterada com sucesso!",
+                description: "A nova senha foi definida para o usuário.",
+            });
+        } catch (err) {
+            toast({
+                variant: "destructive",
+                title: "Erro ao alterar senha",
+                description: err.message,
+            });
         }
+    };
+
+    const openPasswordDialog = (userId) => {
+        setSelectedUserId(userId);
+        setPasswordDialogOpen(true);
     };
 
     const getEmployeeName = (empId) => {
@@ -146,6 +188,37 @@ const AdminDashboard = () => {
                         </form>
                     </DialogContent>
                 </Dialog>
+
+                {/* Password Change Dialog */}
+                <Dialog open={passwordDialogOpen} onOpenChange={setPasswordDialogOpen}>
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle>Alterar Senha do Usuário</DialogTitle>
+                            <DialogDescription>
+                                Digite a nova senha para o usuário.
+                            </DialogDescription>
+                        </DialogHeader>
+                        <form onSubmit={handlePasswordChange} className="space-y-4">
+                            <div className="space-y-2">
+                                <Label>Nova Senha</Label>
+                                <Input
+                                    type="password"
+                                    value={newPassword}
+                                    onChange={e => setNewPassword(e.target.value)}
+                                    required
+                                    minLength={4}
+                                    placeholder="Digite a nova senha"
+                                />
+                            </div>
+                            <div className="flex gap-2">
+                                <Button type="button" variant="outline" onClick={() => setPasswordDialogOpen(false)} className="flex-1">
+                                    Cancelar
+                                </Button>
+                                <Button type="submit" className="flex-1">Alterar Senha</Button>
+                            </div>
+                        </form>
+                    </DialogContent>
+                </Dialog>
             </div>
 
             <div className="glass-card rounded-lg p-1">
@@ -167,7 +240,7 @@ const AdminDashboard = () => {
                                 <TableCell>{getEmployeeName(u.employee_id)}</TableCell>
                                 <TableCell>{u.created_at ? format(new Date(u.created_at), 'dd/MM/yyyy') : '-'}</TableCell>
                                 <TableCell className="text-right gap-2 flex justify-end">
-                                    <Button variant="outline" size="sm" onClick={() => handlePasswordReset(u.id)}>Senha</Button>
+                                    <Button variant="outline" size="sm" onClick={() => openPasswordDialog(u.id)}>Alterar Senha</Button>
                                     {u.username !== 'admin' && (
                                         <Button variant="destructive" size="sm" onClick={() => handleDelete(u.id)}>Excluir</Button>
                                     )}
