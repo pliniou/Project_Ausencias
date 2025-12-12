@@ -1,26 +1,28 @@
-# Controle de Afastamentos (Project Ausencias)
+# Controle de Ausências (Project Ausencias)
 
-Sistema moderno para gestão de ausências e escalas de trabalho, desenvolvido para a BBTS. Estilizado com identidade visual profissional e funcionalidades de administração robustas.
+Sistema moderno para gestão de ausências e escalas de trabalho. Interface profissional desenvolvida com React, Vite, Tailwind CSS e ShadCN UI.
 
 ![Status](https://img.shields.io/badge/status-active-success.svg)
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 
 ## 🚀 Funcionalidades
 
-- **Autenticação Segura**: Login com proteção de rotas e hash de senha via `bcryptjs`.
-- **Banco de Dados Local**: Utiliza **SQLite Client-Side (WASM)** com persistência automática no navegador.
-- **Dashboard Administrativo**: Controle total para Superadmins (criar usuários, resetar senhas, vincular a funcionários).
+- **Autenticação Local**: Login com proteção de rotas e hash de senha via `bcryptjs`
+- **Armazenamento IndexedDB**: Persistência local de dados usando IndexedDB para melhor performance
+- **Sistema de Permissões**: Controle granular de acesso baseado em roles (admin, user, viewer)
+- **Dashboard Administrativo**: Controle total para administradores
 - **Design Premium**:
-  - Temas: Claro, Escuro, Sépia e **Colorido** (Novo!).
-  - Tipografia moderna: `Recursive` para títulos e `Inter` para leitura.
-- **Gestão de Afastamentos**: Visualização em lista ou grade, filtros avançados e exportação de relatórios.
-- **Calendário Interativo**: Visualização mensal dos afastamentos.
+  - Temas: Claro, Escuro e Sépia
+  - Tipografia moderna: `Outfit` para interface limpa
+  - Micro-animações e transições suaves
+- **Gestão de Afastamentos**: Visualização em lista, filtros avançados e exportação (TXT e CSV)
+- **Calendário Interativo**: Visualização mensal dos afastamentos
 
 ## 🛠️ Tecnologias
 
-- **Frontend**: React, Vite
+- **Frontend**: React 18, Vite
 - **UI/UX**: Tailwind CSS, ShadCN UI, Lucide Icons
-- **Database**: sql.js (SQLite WASM)
+- **Database**: IndexedDB (armazenamento local) + sql.js (SQLite WASM) para usuários
 - **Deploy**: GitHub Pages
 
 ## 📦 Instalação e Execução
@@ -28,6 +30,7 @@ Sistema moderno para gestão de ausências e escalas de trabalho, desenvolvido p
 ### Pré-requisitos
 
 - Node.js (v18+)
+- npm ou bun
 
 ### Passo a Passo
 
@@ -44,7 +47,7 @@ Sistema moderno para gestão de ausências e escalas de trabalho, desenvolvido p
     npm install
     ```
 
-3. Copie o binário do SQLite (necessário apenas na primeira vez ou se limpar a pasta public):
+3. O WASM do SQLite é copiado automaticamente durante o build, mas você pode executar manualmente se necessário:
 
     ```bash
     cp node_modules/sql.js/dist/sql-wasm.wasm public/
@@ -56,18 +59,32 @@ Sistema moderno para gestão de ausências e escalas de trabalho, desenvolvido p
     npm run dev
     ```
 
+    O app estará disponível em: `http://localhost:8080`
+
 ## 🔑 Acesso Padrão
 
-Ao iniciar o sistema pela primeira vez, um usuário administrador é criado automaticamente:
+Ao iniciar o sistema pela primeira vez, três usuários de demonstração são criados:
 
-- **Usuário**: `admin`
-- **Senha**: `admin123`
+- **Admin**: `admin` / `demo123`
+- **Usuário**: `usuario` / `demo123`
+- **Visitante**: `visitante` / `demo123`
 
-> **Nota**: Recomenda-se alterar a senha imediatamente após o primeiro login.
+> **⚠️ IMPORTANTE**: A senha padrão é **`demo123`**. Altere imediatamente em produção!
+
+## 🔒 Limitações de Segurança
+
+> **Este é um aplicativo client-side estático hospedado no GitHub Pages:**
+>
+> - ❌ **Não há autenticação real** - validação apenas no navegador
+> - ❌ **Dados são locais** - armazenados apenas no IndexedDB do navegador de cada usuário
+> - ❌ **Sem compartilhamento** - dados não sincronizam entre dispositivos ou usuários
+> - ❌ **Não adequado para dados sensíveis** - use apenas para demonstração ou gestão pessoal
+>
+> **Para uso corporativo real**: considere migrar para SharePoint com Entra ID (veja `docs/sharepoint-migration.md`)
 
 ## 🌐 Deploy no GitHub Pages
 
-O projeto já está configurado para deploy automatizado.
+O projeto está configurado para deploy automatizado:
 
 1. Gere o build de produção:
 
@@ -81,12 +98,47 @@ O projeto já está configurado para deploy automatizado.
     npm run deploy
     ```
 
-O sistema estará acessível em: `https://pliniou.github.io/Project_Ausencias/`
+3. O sistema estará acessível em: `https://pliniou.github.io/Project_Ausencias/`
 
-## 📄 Estrutura do Banco de Dados
+## 📊 Armazenamento de Dados
 
-O banco de dados é um arquivo SQLite armazenado no `IndexedDB` do navegador do usuário.
-**Atenção**: Como é um deploy estático (Serverless), os dados **não são compartilhados** entre diferentes computadores. Cada usuário tem sua própria instância local dos dados.
+- **Usuários**: SQLite (sql.js WASM) persistido em `localStorage`
+- **Dados da aplicação**: IndexedDB para melhor performance e suporte a grandes volumes
+- **Sessão**: `sessionStorage` (expira ao fechar a aba)
+- **Migração automática**: Dados antigos em `localStorage` são migrados automaticamente para IndexedDB na primeira execução
+
+## 🎨 Temas Disponíveis
+
+- **Light** (Padrão): Interface clara e profissional
+- **Dark**: Modo escuro com alto contraste
+- **Sepia**: Modo leitura com tons quentes
+
+## 📁 Estrutura do Projeto
+
+```
+Project_Ausencias/
+├── src/
+│   ├── assets/          # Imagens e resources estáticos
+│   ├── auth/            # Sistema de permissões
+│   ├── components/      # Componentes reutilizáveis
+│   ├── context/         # Context providers (Auth, Data, Theme)
+│   ├── hooks/           # Custom hooks
+│   ├── lib/             # Utilidades e helpers
+│   ├── pages/           # Páginas da aplicação
+│   └── repositories/    # Camada de dados (IndexedDB)
+├── public/              # Assets públicos
+└── docs/                # Documentação adicional
+```
+
+## 🚀 Próximos Passos
+
+Para evolução corporativa, consulte [`docs/sharepoint-migration.md`](docs/sharepoint-migration.md) para orientações sobre:
+
+- Migração para SharePoint Online
+- Integração com Entra ID (SSO)
+- Uso de SharePoint Lists ou Dataverse
+- Implementação de auditoria e compliance
 
 ---
-Desenvolvido com ❤️ por Antigravity.
+
+**Desenvolvido com ❤️ usando React + Vite + Tailwind CSS**
