@@ -99,7 +99,7 @@ export function TopNavbar() {
                                     {theme === 'dark' && <Moon className="h-5 w-5" />}
                                     {theme === 'light' && <Sun className="h-5 w-5" />}
                                     {theme === 'sepia' && <Coffee className="h-5 w-5" />}
-                                    {theme === 'colorful' && <Sun className="h-5 w-5 text-orange-500" />}
+                                    {theme === 'sepia' && <Coffee className="h-5 w-5" />}
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
@@ -110,10 +110,6 @@ export function TopNavbar() {
                                 <DropdownMenuItem onClick={() => setTheme('sepia')}>
                                     <Coffee className="mr-2 h-4 w-4" />
                                     <span>Dark Sepia</span>
-                                </DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => setTheme('colorful')}>
-                                    <Sun className="mr-2 h-4 w-4 text-orange-500" />
-                                    <span>Colorido</span>
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>

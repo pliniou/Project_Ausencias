@@ -15,9 +15,11 @@ export function AuthProvider({ children }) {
             // Check if users exist, if not create default users
             const usersCount = db.query("SELECT COUNT(*) as count FROM users");
             if (usersCount[0].count === 0) {
+                // Use synchronous hash for initialization to ensure immediate availability
                 const defaultHash = bcrypt.hashSync('123456', 10);
 
                 const seedUsers = [
+                    { username: 'admin', role: 'admin', name: 'Super Admin' },
                     { username: 'plinio', role: 'user', name: 'Plinio Marcos De Abreu Rodrigues' },
                     { username: 'gustavo', role: 'admin', name: 'Gustavo Henaut' },
                     { username: 'keilane', role: 'user', name: 'Keilane de Oliveira Pinheiro' },
@@ -34,7 +36,7 @@ export function AuthProvider({ children }) {
                         [u.username, defaultHash, u.role]
                     );
                 });
-                console.log("Default users seeded");
+
             }
 
             // Restore session

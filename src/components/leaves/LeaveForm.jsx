@@ -35,7 +35,17 @@ const leaveSchema = z.object({
     return true;
 }, {
     message: 'Período Aquisitivo é obrigatório para Férias',
-    path: ['acquisitivePeriodStart'], // Mark start as error source
+    path: ['acquisitivePeriodStart'],
+}).refine(data => {
+    if (data.type === 'FERIAS' && data.acquisitivePeriodEnd && data.startDate) {
+        // Concessive period limit: Acquisitive End + 11 months (to warn/block about "dobra" risk)
+        const limit = addMonths(data.acquisitivePeriodEnd, 11);
+        return data.startDate <= limit;
+    }
+    return true;
+}, {
+    message: 'Início das férias excede o limite do período concessivo (Fim Aquisitivo + 11 meses).',
+    path: ['startDate'],
 });
 
 export function LeaveForm({ onSuccess }) {

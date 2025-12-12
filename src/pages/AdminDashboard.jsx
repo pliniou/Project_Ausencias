@@ -39,10 +39,12 @@ const AdminDashboard = () => {
     const [passwordDialogOpen, setPasswordDialogOpen] = useState(false);
     const [selectedUserId, setSelectedUserId] = useState(null);
     const [newPassword, setNewPassword] = useState('');
+    const [confirmNewPassword, setConfirmNewPassword] = useState('');
 
     // Form State
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
     const [role, setRole] = useState('user');
     const [employeeId, setEmployeeId] = useState('none');
 
@@ -57,9 +59,36 @@ const AdminDashboard = () => {
         loadUsers();
     }, []);
 
+    const resetForms = () => {
+        setUsername('');
+        setPassword('');
+        setConfirmPassword('');
+        setRole('user');
+        setEmployeeId('none');
+        setNewPassword('');
+        setConfirmNewPassword('');
+        setError('');
+    };
+
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
     const handleRegister = async (e) => {
         e.preventDefault();
         setError('');
+        setIsSubmitting(true);
+
+        if (password.length < 6) {
+            setError('A senha deve ter no mínimo 6 caracteres.');
+            setIsSubmitting(false);
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            setError('As senhas não coincidem.');
+            setIsSubmitting(false);
+            return;
+        }
+
         try {
             const empId = employeeId === 'none' ? null : employeeId;
             await registerUser(username, password, role, empId);
@@ -69,11 +98,7 @@ const AdminDashboard = () => {
                 title: "Usuário criado com sucesso!",
                 description: `O usuário ${username} foi cadastrado.`,
             });
-            // Reset form
-            setUsername('');
-            setPassword('');
-            setRole('user');
-            setEmployeeId('none');
+            resetForms();
         } catch (err) {
             setError(err.message);
             toast({
@@ -81,6 +106,8 @@ const AdminDashboard = () => {
                 title: "Erro ao criar usuário",
                 description: err.message,
             });
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -105,10 +132,21 @@ const AdminDashboard = () => {
 
     const handlePasswordChange = async (e) => {
         e.preventDefault();
+
+        if (newPassword.length < 6) {
+            toast({ variant: "destructive", title: "Erro", description: "A senha deve ter no mínimo 6 caracteres." });
+            return;
+        }
+
+        if (newPassword !== confirmNewPassword) {
+            toast({ variant: "destructive", title: "Erro", description: "As senhas não coincidem." });
+            return;
+        }
+
         try {
             await changePassword(selectedUserId, newPassword);
             setPasswordDialogOpen(false);
-            setNewPassword('');
+            resetForms();
             toast({
                 title: "Senha alterada com sucesso!",
                 description: "A nova senha foi definida para o usuário.",
@@ -136,7 +174,7 @@ const AdminDashboard = () => {
         <div className="space-y-6">
             <div className="flex justify-between items-center">
                 <h2 className="text-3xl font-bold tracking-tight text-[#003399]">Gestão de Usuários</h2>
-                <Dialog open={isOpen} onOpenChange={setIsOpen}>
+                <Dialog open={isOpen} onOpenChange={(open) => { setIsOpen(open); if (!open) resetForms(); }}>
                     <DialogTrigger asChild>
                         <Button className="bg-[#FFCC00] text-black hover:bg-[#E6B800]">Novo Usuário</Button>
                     </DialogTrigger>
@@ -152,9 +190,15 @@ const AdminDashboard = () => {
                                 <Label>Usuário</Label>
                                 <Input value={username} onChange={e => setUsername(e.target.value)} required />
                             </div>
-                            <div className="space-y-2">
-                                <Label>Senha</Label>
-                                <Input type="password" value={password} onChange={e => setPassword(e.target.value)} required />
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <Label>Senha</Label>
+                                    <Input type="password" value={password} onChange={e => setPassword(e.target.value)} required minLength={6} placeholder="Mín. 6 caracteres" />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Confirmar Senha</Label>
+                                    <Input type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} required placeholder="Repita a senha" />
+                                </div>
                             </div>
                             <div className="space-y-2">
                                 <Label>Nível de Acesso</Label>
@@ -184,13 +228,15 @@ const AdminDashboard = () => {
                                 </Select>
                             </div>
                             {error && <p className="text-destructive text-sm">{error}</p>}
-                            <Button type="submit" className="w-full">Cadastrar</Button>
+                            <Button type="submit" className="w-full" disabled={isSubmitting}>
+                                {isSubmitting ? 'Cadastrando...' : 'Cadastrar'}
+                            </Button>
                         </form>
                     </DialogContent>
                 </Dialog>
 
                 {/* Password Change Dialog */}
-                <Dialog open={passwordDialogOpen} onOpenChange={setPasswordDialogOpen}>
+                <Dialog open={passwordDialogOpen} onOpenChange={(open) => { setPasswordDialogOpen(open); if (!open) resetForms(); }}>
                     <DialogContent>
                         <DialogHeader>
                             <DialogTitle>Alterar Senha do Usuário</DialogTitle>
@@ -206,8 +252,18 @@ const AdminDashboard = () => {
                                     value={newPassword}
                                     onChange={e => setNewPassword(e.target.value)}
                                     required
-                                    minLength={4}
-                                    placeholder="Digite a nova senha"
+                                    minLength={6}
+                                    placeholder="Digite a nova senha (mín 6)"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label>Confirmar Nova Senha</Label>
+                                <Input
+                                    type="password"
+                                    value={confirmNewPassword}
+                                    onChange={e => setConfirmNewPassword(e.target.value)}
+                                    required
+                                    placeholder="Repita a nova senha"
                                 />
                             </div>
                             <div className="flex gap-2">

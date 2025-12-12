@@ -27,7 +27,7 @@ class Database {
                 this.initSchema();
             }
 
-            console.log("Database initialized");
+
         } catch (error) {
             console.error("Failed to initialize database:", error);
             throw error;
@@ -42,7 +42,7 @@ class Database {
                 username TEXT UNIQUE NOT NULL,
                 password_hash TEXT NOT NULL,
                 role TEXT CHECK(role IN ('admin', 'user', 'viewer')) NOT NULL,
-                employee_id TEXT, -- Link to mockData employee ID
+                employee_id TEXT,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP
             );
         `);

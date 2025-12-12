@@ -117,14 +117,7 @@ const Login = () => {
                         </form>
                     </Form>
                 </CardContent>
-                <div className="px-6 pb-6 text-center">
-                    <div className="p-4 bg-muted/50 rounded-lg border border-border">
-                        <p className="text-xs text-muted-foreground font-medium mb-1">Credenciais de Teste</p>
-                        <p className="text-xs text-foreground">
-                            <span className="font-semibold">Usuário:</span> gustavo | <span className="font-semibold">Senha:</span> 123456
-                        </p>
-                    </div>
-                </div>
+
             </Card>
         </div>
     );
