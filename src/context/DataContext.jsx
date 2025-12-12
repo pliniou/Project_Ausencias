@@ -119,12 +119,20 @@ export function DataProvider({ children }) {
 
     // ... validateVacationRule to be added to return value ...
 
+    const updateHoliday = (id, updates) => {
+        setHolidays(prev => prev.map(h => h.id === id ? { ...h, ...updates } : h));
+    };
+
     const deleteHoliday = (id) => {
         setHolidays(prev => prev.filter(h => h.id !== id));
     };
 
     const addCompanyEvent = (event) => {
         setCompanyEvents(prev => [...prev, { ...event, id: generateId() }]);
+    };
+
+    const updateCompanyEvent = (id, updates) => {
+        setCompanyEvents(prev => prev.map(e => e.id === id ? { ...e, ...updates } : e));
     };
 
     const deleteCompanyEvent = (id) => {
@@ -157,8 +165,10 @@ export function DataProvider({ children }) {
             updateLeave,
             deleteLeave,
             addHoliday,
+            updateHoliday,
             deleteHoliday,
             addCompanyEvent,
+            updateCompanyEvent,
             deleteCompanyEvent,
             getEmployeeById,
             getActiveLeaves,

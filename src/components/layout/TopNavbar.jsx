@@ -29,7 +29,8 @@ export function TopNavbar() {
         <header className="sticky top-0 z-50 w-full border-b border-border/10 bg-background/80 backdrop-blur-md">
             <div className="container mx-auto flex h-20 items-center justify-between px-4">
                 {/* Logo */}
-                <div className="flex items-center gap-4">
+                {/* Logo */}
+                <Link to="/" className="flex items-center gap-4 hover:opacity-80 transition-opacity">
                     <img
                         src={logoBBTS}
                         alt="BBTS Logo"
@@ -43,7 +44,7 @@ export function TopNavbar() {
                             </h1>
                         </div>
                     </div>
-                </div>
+                </Link>
 
                 <div className="flex items-center gap-4">
                     {/* Navigation */}
