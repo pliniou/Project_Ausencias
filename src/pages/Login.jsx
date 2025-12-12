@@ -46,14 +46,26 @@ const Login = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 flex-col gap-8">
-            <img src={logo} alt="BBTS Logo" className="h-24 object-contain" />
-            <Card className="w-[350px] shadow-lg animate-fade-in">
-                <CardHeader>
-                    <CardTitle className="text-2xl text-primary text-center">Login</CardTitle>
-                    <CardDescription className="text-center">Acesse o Sistema de Ausências</CardDescription>
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-primary/5 flex-col gap-8 p-4 relative overflow-hidden">
+            {/* Background decoration */}
+            <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
+            <div className="absolute top-0 right-0 w-96 h-96 bg-primary/10 rounded-full blur-3xl"></div>
+            <div className="absolute bottom-0 left-0 w-96 h-96 bg-accent/10 rounded-full blur-3xl"></div>
+
+            {/* Logo */}
+            <img src={logo} alt="BBTS Logo" className="h-28 object-contain animate-slide-down z-10" />
+
+            {/* Login Card */}
+            <Card className="w-full max-w-md shadow-2xl animate-slide-up border-2 relative z-10 backdrop-blur-sm bg-card/95">
+                <CardHeader className="space-y-3 pb-6">
+                    <CardTitle className="text-3xl font-bold text-center bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
+                        Bem-vindo
+                    </CardTitle>
+                    <CardDescription className="text-center text-base">
+                        Sistema de Gestão de Ausências
+                    </CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="pb-8">
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                             <FormField
@@ -61,9 +73,13 @@ const Login = () => {
                                 name="username"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Usuário</FormLabel>
+                                        <FormLabel className="text-sm font-semibold">Usuário</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="admin" {...field} />
+                                            <Input
+                                                placeholder="Digite seu usuário"
+                                                {...field}
+                                                className="h-11 transition-all duration-200 focus:scale-[1.01] focus:shadow-md"
+                                            />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -74,21 +90,40 @@ const Login = () => {
                                 name="password"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Senha</FormLabel>
+                                        <FormLabel className="text-sm font-semibold">Senha</FormLabel>
                                         <FormControl>
-                                            <Input type="password" placeholder="****" {...field} />
+                                            <Input
+                                                type="password"
+                                                placeholder="Digite sua senha"
+                                                {...field}
+                                                className="h-11 transition-all duration-200 focus:scale-[1.01] focus:shadow-md"
+                                            />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
                                 )}
                             />
-                            {error && <p className="text-sm text-destructive text-center">{error}</p>}
-                            <Button type="submit" className="w-full bg-[#003399] hover:bg-[#002277]">Entrar</Button>
+                            {error && (
+                                <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-lg animate-slide-down">
+                                    <p className="text-sm text-destructive text-center font-medium">{error}</p>
+                                </div>
+                            )}
+                            <Button
+                                type="submit"
+                                className="w-full h-11 bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] font-semibold text-base"
+                            >
+                                Entrar
+                            </Button>
                         </form>
                     </Form>
                 </CardContent>
-                <div className="p-4 text-center text-xs text-muted-foreground">
-                    <p>Login padrão: admin / admin123</p>
+                <div className="px-6 pb-6 text-center">
+                    <div className="p-4 bg-muted/50 rounded-lg border border-border">
+                        <p className="text-xs text-muted-foreground font-medium mb-1">Credenciais de Teste</p>
+                        <p className="text-xs text-foreground">
+                            <span className="font-semibold">Usuário:</span> gustavo | <span className="font-semibold">Senha:</span> 123456
+                        </p>
+                    </div>
                 </div>
             </Card>
         </div>

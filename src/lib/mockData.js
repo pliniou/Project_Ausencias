@@ -65,7 +65,7 @@ export const employees = [
     },
     {
         id: '6',
-        name: 'Gabriela Fernanda dos Santos C...',
+        name: 'Gabriela Fernanda dos Santos Carvalho',
         role: 'ASSESSOR PLENO',
         department: 'Jurídico Trabalhista',
         status: 'ATIVO',
@@ -77,7 +77,7 @@ export const employees = [
     },
     {
         id: '7',
-        name: 'Raphaella Medeiros D Abadia Sa...',
+        name: 'Raphaella Medeiros D Abadia Sales',
         role: 'PRESTADOR DE SERVICO',
         department: 'Jurídico Trabalhista',
         status: 'ATIVO',

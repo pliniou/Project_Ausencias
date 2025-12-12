@@ -18,13 +18,13 @@ export function AuthProvider({ children }) {
                 const defaultHash = bcrypt.hashSync('123456', 10);
 
                 const seedUsers = [
-                    { username: 'plinio', role: 'superadmin', name: 'Plinio Marcos De Abreu Rodrigues' },
+                    { username: 'plinio', role: 'user', name: 'Plinio Marcos De Abreu Rodrigues' },
                     { username: 'gustavo', role: 'admin', name: 'Gustavo Henaut' },
                     { username: 'keilane', role: 'user', name: 'Keilane de Oliveira Pinheiro' },
                     { username: 'drielly', role: 'user', name: 'Drielly Alves de Castro' },
                     { username: 'elton', role: 'user', name: 'Elton Carlos Ribeiro da Silva' },
-                    { username: 'gabriela', role: 'user', name: 'Gabriela Fernanda dos Santos C...' },
-                    { username: 'raphaella', role: 'user', name: 'Raphaella Medeiros D Abadia Sa...' },
+                    { username: 'gabriela', role: 'user', name: 'Gabriela Fernanda dos Santos Carvalho' },
+                    { username: 'raphaella', role: 'user', name: 'Raphaella Medeiros D Abadia Sales' },
                     { username: 'douglas', role: 'user', name: 'Douglas De Sousa Oliveira Saraiva' },
                 ];
 
