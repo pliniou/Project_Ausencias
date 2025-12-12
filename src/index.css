@@ -6,44 +6,45 @@
 
 @layer base {
   :root {
-    /* Slate 50 as background, Slate 900 as foreground for high contrast clean look */
+    /* --- Light Theme (Slate / Indigo) --- */
     --background: 210 40% 98%;
+    /* Slate 50 */
     --foreground: 222.2 84% 4.9%;
+    /* Slate 900 */
 
-    /* White card background */
     --card: 0 0% 100%;
+    /* White */
     --card-foreground: 222.2 84% 4.9%;
 
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    /* Indigo 600 as Primary - Professional and trust-evoking */
     --primary: 221.2 83.2% 53.3%;
+    /* Indigo 600 */
     --primary-foreground: 210 40% 98%;
 
-    /* Slate 100 as Secondary/Muted */
     --secondary: 210 40% 96.1%;
+    /* Slate 100 */
     --secondary-foreground: 222.2 47.4% 11.2%;
 
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
+    /* Slate 500 */
 
-    /* Indigo 100 as Accent */
     --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent-foreground: 221.2 83.2% 53.3%;
 
-    /* Red 500 for Destructive */
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    /* Slate 200 for borders - subtle */
     --border: 214.3 31.8% 91.4%;
+    /* Slate 200 */
     --input: 214.3 31.8% 91.4%;
     --ring: 221.2 83.2% 53.3%;
 
     --radius: 0.5rem;
 
-    /* Sidebar specific */
+    /* Sidebar Defaults */
     --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 222.2 84% 4.9%;
     --sidebar-primary: 221.2 83.2% 53.3%;
@@ -53,16 +54,17 @@
     --sidebar-border: 214.3 31.8% 91.4%;
     --sidebar-ring: 221.2 83.2% 53.3%;
 
-    /* Status Colors */
-    --status-active: 142.1 76.2% 36.3%; /* Green 600 */
-    --status-planned: 38 92% 50%;     /* Amber 500 */
-    --status-ended: 220 8.9% 46.1%;   /* Slate 500 */
+    --status-active: 142 76% 36%;
+    --status-planned: 38 92% 50%;
+    --status-ended: 220 9% 46%;
   }
 
   .dark {
-    /* Slate 950 background for dark mode */
+    /* --- Dark Theme (High Contrast Slate) --- */
     --background: 222.2 84% 4.9%;
+    /* Slate 950 */
     --foreground: 210 40% 98%;
+    /* Slate 50 */
 
     --card: 222.2 84% 4.9%;
     --card-foreground: 210 40% 98%;
@@ -71,13 +73,16 @@
     --popover-foreground: 210 40% 98%;
 
     --primary: 217.2 91.2% 59.8%;
+    /* Indigo 400 */
     --primary-foreground: 222.2 47.4% 11.2%;
 
     --secondary: 217.2 32.6% 17.5%;
+    /* Slate 800 */
     --secondary-foreground: 210 40% 98%;
 
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
+    /* Slate 400 */
 
     --accent: 217.2 32.6% 17.5%;
     --accent-foreground: 210 40% 98%;
@@ -91,32 +96,75 @@
 
     --sidebar-background: 222.2 84% 4.9%;
     --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 221.2 83.2% 53.3%;
-    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-primary: 217.2 91.2% 59.8%;
+    --sidebar-primary-foreground: 222.2 84% 4.9%;
     --sidebar-accent: 217.2 32.6% 17.5%;
     --sidebar-accent-foreground: 210 40% 98%;
     --sidebar-border: 217.2 32.6% 17.5%;
     --sidebar-ring: 212.7 26.8% 83.9%;
   }
 
+  .sepia {
+    /* --- Sepia Theme (Warm / Reader Mode) --- */
+    --background: 48 25% 90%;
+    /* Warm Beige */
+    --foreground: 20 14% 4%;
+    /* Dark Brown */
+
+    --card: 48 30% 94%;
+    --card-foreground: 20 14% 4%;
+
+    --popover: 48 30% 94%;
+    --popover-foreground: 20 14% 4%;
+
+    --primary: 24 50% 35%;
+    /* Brown 800 */
+    --primary-foreground: 48 30% 94%;
+
+    --secondary: 48 20% 85%;
+    --secondary-foreground: 24 50% 20%;
+
+    --muted: 48 20% 85%;
+    --muted-foreground: 24 10% 40%;
+
+    --accent: 48 20% 85%;
+    --accent-foreground: 24 50% 35%;
+
+    --destructive: 0 50% 40%;
+    --destructive-foreground: 48 30% 94%;
+
+    --border: 30 15% 60%;
+    --input: 30 15% 70%;
+    --ring: 24 50% 35%;
+
+    --sidebar-background: 48 25% 90%;
+    --sidebar-foreground: 20 14% 4%;
+    --sidebar-primary: 24 50% 35%;
+    --sidebar-primary-foreground: 48 30% 94%;
+    --sidebar-accent: 48 20% 85%;
+    --sidebar-accent-foreground: 24 50% 35%;
+    --sidebar-border: 30 15% 60%;
+    --sidebar-ring: 24 50% 35%;
+  }
+}
+
+@layer base {
   * {
     @apply border-border;
   }
 
   body {
     @apply bg-background text-foreground font-sans antialiased;
-    font-family: 'Inter', sans-serif;
   }
 }
 
 @layer components {
-  /* Modern Clean Card */
   .glass-card {
-    @apply bg-white border border-border shadow-sm rounded-xl transition-all duration-200;
+    @apply bg-card border border-border shadow-sm rounded-xl transition-all duration-200;
   }
-  
+
   .dark .glass-card {
-    @apply bg-slate-900 border-border;
+    @apply bg-card/50 backdrop-blur-sm border-border/50;
   }
 
   .stat-card {

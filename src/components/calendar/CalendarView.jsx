@@ -143,12 +143,12 @@ export function CalendarView({ onSelectDate, selectedEmployeeId, selectedLeaveTy
                                 </div>
                             )}
 
-                            <div className="flex flex-col gap-1 w-full mt-1 overflow-hidden flex-1 justify-end">
-                                {dayLeaves.slice(0, isCurrentDay ? 3 : 2).map((leave) => (
+                            <div className="flex flex-col gap-0.5 w-full mt-1 overflow-hidden flex-1 justify-end">
+                                {dayLeaves.slice(0, 4).map((leave) => (
                                     <div
                                         key={leave.id}
                                         className={cn(
-                                            'text-[9px] px-1.5 py-0.5 rounded-md truncate font-medium shadow-sm transition-transform hover:scale-105',
+                                            'text-[8px] leading-3 px-1 py-0.5 rounded-[3px] truncate font-medium shadow-sm transition-transform hover:scale-105',
                                             leaveTypeColors[leave.type]
                                         )}
                                         title={`${leave.employeeName} - ${leaveTypeLabels[leave.type]}`}
@@ -156,9 +156,9 @@ export function CalendarView({ onSelectDate, selectedEmployeeId, selectedLeaveTy
                                         {leave.employeeName.split(' ')[0]}
                                     </div>
                                 ))}
-                                {dayLeaves.length > (isCurrentDay ? 3 : 2) && (
+                                {dayLeaves.length > 4 && (
                                     <span className="text-[9px] text-muted-foreground font-medium pl-1">
-                                        +{dayLeaves.length - (isCurrentDay ? 3 : 2)}
+                                        +{dayLeaves.length - 4}
                                     </span>
                                 )}
                             </div>

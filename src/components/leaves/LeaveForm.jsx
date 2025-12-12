@@ -217,6 +217,7 @@ export function LeaveForm({ onSuccess }) {
                                                     setAcquisitiveEnd(date);
                                                     setValue('acquisitivePeriodEnd', date);
                                                 }}
+                                                defaultMonth={acquisitiveStart || undefined}
                                                 initialFocus
                                             />
                                         </PopoverContent>
@@ -294,6 +295,7 @@ export function LeaveForm({ onSuccess }) {
                                     if (date) setValue('endDate', date);
                                 }}
                                 disabled={(date) => startDate ? date < startDate : false}
+                                defaultMonth={startDate || undefined}
                                 initialFocus
                                 className="pointer-events-auto"
                             />

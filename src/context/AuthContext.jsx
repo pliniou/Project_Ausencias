@@ -12,12 +12,29 @@ export function AuthProvider({ children }) {
         const initAuth = async () => {
             await db.init();
 
-            // Check if admin exists, if not create default
-            const admins = db.query("SELECT * FROM users WHERE username = ?", ['admin']);
-            if (admins.length === 0) {
-                const hash = bcrypt.hashSync('admin123', 10);
-                db.run("INSERT INTO users (username, password_hash, role) VALUES (?, ?, ?)", ['admin', hash, 'admin']);
-                console.log("Default admin created: admin / admin123");
+            // Check if users exist, if not create default users
+            const usersCount = db.query("SELECT COUNT(*) as count FROM users");
+            if (usersCount[0].count === 0) {
+                const defaultHash = bcrypt.hashSync('123456', 10);
+
+                const seedUsers = [
+                    { username: 'plinio', role: 'superadmin', name: 'Plinio Marcos De Abreu Rodrigues' },
+                    { username: 'gustavo', role: 'admin', name: 'Gustavo Henaut' },
+                    { username: 'keilane', role: 'user', name: 'Keilane de Oliveira Pinheiro' },
+                    { username: 'drielly', role: 'user', name: 'Drielly Alves de Castro' },
+                    { username: 'elton', role: 'user', name: 'Elton Carlos Ribeiro da Silva' },
+                    { username: 'gabriela', role: 'user', name: 'Gabriela Fernanda dos Santos C...' },
+                    { username: 'raphaella', role: 'user', name: 'Raphaella Medeiros D Abadia Sa...' },
+                    { username: 'douglas', role: 'user', name: 'Douglas De Sousa Oliveira Saraiva' },
+                ];
+
+                seedUsers.forEach(u => {
+                    db.run(
+                        "INSERT INTO users (username, password_hash, role) VALUES (?, ?, ?)",
+                        [u.username, defaultHash, u.role]
+                    );
+                });
+                console.log("Default users seeded");
             }
 
             // Restore session
